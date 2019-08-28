@@ -29,6 +29,7 @@
 #install.packages("caret")
 #install.packages("class")
 #install.packages("e1071")
+#install.packages("fitdistrplus")
 
 require(ggpubr) # Para mejorar la visualización gráfica
 require(tidyverse) # Para explotar, manipular y visualizar datos que comparten info
@@ -52,7 +53,7 @@ library(dplyr)
 library(caret) # Muestreo estratificado
 library(class) # Para KNN
 library(e1071) # Requisito para la matriz de confusión
-
+library(fitdistrplus)
 
 setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
 
@@ -84,4 +85,15 @@ corrplot(corr)
 
 
 #meses de mayor venta
-plot(data$Mes, data$Total)
+
+qqnorm(data$Total)
+
+
+#Ajuste de normalidad, para la variable diesel. 
+
+
+
+
+descdist(data$Diesel, discrete= FALSE)
+dieselfit <- fitdist(data$Diesel,"norm")
+plot(dieselfit)
