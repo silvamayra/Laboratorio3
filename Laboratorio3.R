@@ -52,12 +52,16 @@ library(dplyr)
 library(caret) # Muestreo estratificado
 library(class) # Para KNN
 library(e1071) # Requisito para la matriz de confusión
-library(tm)
-library(pdftools)
+
 
 setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 3")
-filename = "Importacion.pdf"
 
 
-Rpdf <- readPDF(control = list(text = "-layout"))
-doc
+# Leyendo el dataset de csv importacion
+data <- read.csv("datosImp.csv", TRUE, ",")
+# Volviendo el csv en un data frame
+class(data)
+
+#Exploracion rapida
+
+summary(data)
