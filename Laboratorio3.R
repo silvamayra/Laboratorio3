@@ -58,25 +58,30 @@ setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 
 
 
 # Leyendo el dataset de csv importacion
-data <- read.csv("datosImp.csv", TRUE, ",")
+datos <- read.csv("datosImp.csv", TRUE, ",")
 # Volviendo el csv en un data frame
-class(data)
+class(datos)
 
 
 #Quitando las columnas llenas de NA
-dataClean <- data[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,16,17,18,19,20,21,22,24,25)]
+data <- datos[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,16,17,18,19,20,21,22,24,25)]
 
-dataClean[is.na(dataClean)] <- 0
+#quitando ceros
+data[is.na(data)] <- 0
 
 #Exploracion rapida
 
-summary(dataClean)
+summary(data)
 
 
 #-------------------------- Analisis exploratorio ------------------------
 
 
 
-corr <- cor(dataClean)
+corr <- cor(data)
 # Se visualiza la matriz de correlación de forma gráfica
 corrplot(corr)
+
+
+#meses de mayor venta
+plot(data$Mes, data$Total)
