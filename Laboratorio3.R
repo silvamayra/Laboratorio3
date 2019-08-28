@@ -97,3 +97,63 @@ qqnorm(data$Total)
 descdist(data$Diesel, discrete= FALSE)
 dieselfit <- fitdist(data$Diesel,"norm")
 plot(dieselfit)
+
+
+
+library(forecast)
+library(tseries)
+library(fUnitRoots)
+library(ggfortify)
+
+# ----------------------------------------------------
+# Series temporales de gasolina
+# ----------------------------------------------------
+
+# Datos de la serie
+start(data$Anio) # Inicio
+end(data$Anio) # Finalización 
+frequency(data) # Frecuencia, es 1
+plot(data) # Grafica
+abline(reg=lm(data~time(data)), col=c("red")) # Regresión lineal con el tiempo
+
+# DIESEL
+#Ver el gráfico de la serie
+diesel.ts<-ts(data$Diesel,start = c(2001,1),frequency = 1)
+plot(diesel.ts)
+# Descomponiendo la serie de diesel
+diesel.ts.desc <- decompose(diesel.ts)
+plot(diesel.ts.desc)
+# RESUMEN: No muestra tendencia, es estancionaria con la media pero no con la varianza
+
+
+# SUPER
+#Ver el gráfico de la serie
+super.ts<-ts(data$GasSuperior,start = c(2001,1),frequency = 1)
+plot(super.ts)
+# Descomponiendo la serie de diesel
+super.ts.desc <- decompose(super.ts)
+plot(super.ts.desc)
+# RESUMEN: Sí hay tendencia, no es estacionara con la media pero lo es con la varianza un poco
+
+
+# REGULAR
+regular.ts<-ts(data$GasRegular,start = c(2001,1),frequency = 1)
+plot(regular.ts)
+# Descomponiendo la serie de diesel
+start(data$GasRegular)
+regular.ts.desc <- decompose(regular.ts)
+plot(regular.ts.desc)
+
+
+
+
+# ----------------------------------------------------
+# Modelo ARIMA para diesel
+# ----------------------------------------------------
+
+auto.arima(data$Diesel)
+
+# Iniciando el modelo de ARIMA
+fit <- arima(log(data$Diesel), c(0, 1, 1),seasonal = list(order = c(0, 1, 1), period = 1))
+
+
