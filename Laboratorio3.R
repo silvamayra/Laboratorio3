@@ -54,7 +54,7 @@ library(class) # Para KNN
 library(e1071) # Requisito para la matriz de confusión
 
 
-setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 3")
+setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
 
 
 # Leyendo el dataset de csv importacion
@@ -62,6 +62,21 @@ data <- read.csv("datosImp.csv", TRUE, ",")
 # Volviendo el csv en un data frame
 class(data)
 
+
+#Quitando las columnas llenas de NA
+dataClean <- data[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,16,17,18,19,20,21,22,24,25)]
+
+
+
 #Exploracion rapida
 
-summary(data)
+summary(dataClean)
+
+
+#-------------------------- Analisis exploratorio ------------------------
+
+
+
+corr <- cor(dataClean)
+# Se visualiza la matriz de correlación de forma gráfica
+corrplot(corr)
