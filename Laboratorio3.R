@@ -117,11 +117,21 @@ plot(superfit)
 dataMonth  <- group_by(data, Mes)
 summaryMonth  <- summarise(dataMonth, sumMonth=sum(Total))
 
+plot(summaryMonth, main= 'Meses vs Total de Importaciones', type='l')
+
 #Picos en importaciones de año
 
 ggplot(data, aes(x=as.factor(Anio), y=Total)) + 
   geom_boxplot(fill="slateblue", alpha=0.2) + 
   xlab("Año de importacion")
+
+#Picos en importaciones Diesel 
+ggplot(data)+ geom_point(aes(x=Anio, y=Diesel))
+
+#Picos en importaciones super
+ggplot(data)+ geom_point(aes(x=Anio, y=GasSuperior), color='blue')
+#Picos en importaciones regular
+  ggplot(data)+ geom_point(aes(x=Anio, y=GasRegular, color='red'))
 
 
 
