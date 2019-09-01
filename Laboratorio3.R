@@ -123,33 +123,33 @@ ggplot(data, aes(x=as.factor(Anio), y=Total)) +
   geom_boxplot(fill="slateblue", alpha=0.2) + 
   xlab("Año de importacion")
 
-#Picos en importaciones por Diesel
+
+
+
 
 
 # ----------------------------------------------------
 # Series temporales de gasolina
 # ----------------------------------------------------
 
-# Datos de la serie
-start(data$Anio) # Inicio
-end(data$Anio) # Finalización 
-frequency(data) # Frecuencia, es 1
-plot(data) # Grafica
-abline(reg=lm(data~time(data)), col=c("red")) # Regresión lineal con el tiempo
+
 
 # DIESEL
+
+
 #Ver el gráfico de la serie
-diesel.ts<-ts(data$Diesel,start = c(2001,1),frequency = 1)
+diesel.ts<-ts(data$Diesel,start = c(2001,1), end=c(2019,6), frequency = 12)
 plot(diesel.ts)
 # Descomponiendo la serie de diesel
 diesel.ts.desc <- decompose(diesel.ts)
 plot(diesel.ts.desc)
+
 # RESUMEN: No muestra tendencia, es estancionaria con la media pero no con la varianza
 
 
 # SUPER
 #Ver el gráfico de la serie
-super.ts<-ts(data$GasSuperior,start = c(2001,1),frequency = 1)
+super.ts<-ts(data$GasSuperior,start = c(2001,1), end=c(2019,6), frequency = 12)
 plot(super.ts)
 # Descomponiendo la serie de diesel
 super.ts.desc <- decompose(super.ts)
@@ -158,7 +158,7 @@ plot(super.ts.desc)
 
 
 # REGULAR
-regular.ts<-ts(data$GasRegular,start = c(2001,1),frequency = 1)
+regular.ts<-ts(data$GasRegular,start = c(2001,1),frequency = 12)
 plot(regular.ts)
 # Descomponiendo la serie de diesel
 start(data$GasRegular)
