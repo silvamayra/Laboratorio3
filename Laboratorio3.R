@@ -60,7 +60,7 @@ library(tseries)
 library(fUnitRoots)
 library(ggfortify)
 
-setwd("C:/Users/smayr/Documents/Tercer aÃ±o/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
+setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
 
 
 # Leyendo el dataset de csv importacion
@@ -155,7 +155,12 @@ plot.ts(tm)
 #no es eficiente
 lambda<- BoxCox.lambda(diesel.ts) 
 lambda #fue de  1.8
-plot.ts(BoxCox(diesel.ts, lambda=0.5))
+plot.ts(BoxCox(diesel.ts, lambda=0.7))
+
+#elimnando la tendencia
+
+m <- acf(diff(diesel.ts), plot=TRUE)
+m
 
 
 
