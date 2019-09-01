@@ -145,6 +145,19 @@ diesel.ts.desc <- decompose(diesel.ts)
 plot(diesel.ts.desc)
 
 # RESUMEN: No muestra tendencia, es estancionaria con la media pero no con la varianza
+#Transformacion de la serie
+
+dieselTrans<- log(diesel.ts)
+tm <- cbind(dieselTrans, diesel.ts)
+plot.ts(tm)
+#↓ot(decompose(dieselTrans))
+
+#no es eficiente
+lambda<- BoxCox.lambda(diesel.ts) 
+lambda #fue de  1.8
+plot.ts(BoxCox(diesel.ts, lambda=0.5))
+
+
 
 
 # SUPER
@@ -175,7 +188,7 @@ plot(regular.ts.desc)
 auto.arima(data$Diesel)
 
 # Iniciando el modelo de ARIMA
-fit <- arima(log(data$Diesel), c(0, 1, 1),seasonal = list(order = c(0, 1, 1), period = 1))
+fit <- arima(log(data$Diesel), c(0, 1, 1),seasonal = list(order = c(0, 1, 1), period = 12))
 
 
 
