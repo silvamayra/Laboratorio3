@@ -141,31 +141,30 @@ diesel.ts.desc <- decompose(diesel.ts)
 plot(diesel.ts.desc)
 # RESUMEN: No muestra tendencia, es estancionaria con la media pero no con la varianza
 
-#Transformacion de la serie
-dieselTrans<- log(diesel.ts)
-tm <- cbind(dieselTrans, diesel.ts)
-plot.ts(tm)
-#↓ot(decompose(dieselTrans))
-#no es eficiente
+#Prueba de autocorrelación
+acf(diesel.ts) # No es estacionaria
+# Prueba de Dickey-Fuller
+adf.test(diesel.ts) # Se rechaza Ho --> no es estacionario
 
-lambda<- BoxCox.lambda(diesel.ts) 
-lambda #fue de  1.8
-plot.ts(BoxCox(diesel.ts, lambda=lambda))
-plot(decompose(dieselTrans))
-#elimnando la tendencia
-m <- acf(diff(diesel.ts), plot=TRUE)
-m
-
+# Volviendo Diesel estacionaria
+# Se harán 12 diferenciaciones 
+l.diesel <- BoxCox.lambda(diesel.ts) 
+l.diesel #fue de 1.80
+x.diesel <- BoxCox(diesel.ts, lambda=l.diesel)
+plot.ts(x.diesel)
 # Eliminación de tendencia
-x = log(diesel.ts)
-dif1.x = diff(x)
-plot(dif1.x)
+diff.diesel1 = diff(x.diesel)
+plot(diff.diesel1)
 # Eliminación de estacionalidad con diferencias estacionales de orden 12
-dift2.x = diff(dif1.x, lag=12)
-plot(dift2.x)
+diff.diesel2 = diff(diff.diesel1, lag=12)
+plot(diff.diesel2)
+plot(decompose(diff.diesel2))
 
-plot(decompose(dift2.x))
-acf(dift2.x)
+# Verificación de estacionalidad de media
+# Prueba de autocorrelacion
+acf(diff.diesel2) # No hay tendencia
+# Prueba de Dickey-Fuller
+adf.test(diff.diesel2) # Ya es estacionaria
 
 
 
@@ -210,13 +209,38 @@ adf.test(diff.super2) # Ya es estacionaria
 # ----------------------------------------------------
 # REGULAR
 # ----------------------------------------------------
-regular.ts<-ts(data$GasRegular,start = c(2001,1),frequency = 12)
+#Ver el gráfico de la serie
+regular.ts<-ts(data$GasRegular,start = c(2001,1), end=c(2019,6), frequency = 12)
 plot(regular.ts)
 # Descomponiendo la serie de diesel
-start(data$GasRegular)
 regular.ts.desc <- decompose(regular.ts)
 plot(regular.ts.desc)
+# RESUMEN: Muestra tendencia,no es estancionaria con la media y tampoco con la varianza
 
+#Prueba de autocorrelación
+acf(regular.ts) # No es estacionaria
+# Prueba de Dickey-Fuller
+adf.test(regular.ts) # Se rechaza Ho --> no es estacionario
+
+# Volviendo Regular estacionaria
+# Se harán 12 diferenciaciones 
+l.regular <- BoxCox.lambda(regular.ts) 
+l.regular #fue de 0.45
+x.regular <- BoxCox(regular.ts, lambda=l.regular)
+plot.ts(x.regular)
+# Eliminación de tendencia
+diff.regular1 = diff(x.regular)
+plot(diff.regular1)
+# Eliminación de estacionalidad con diferencias estacionales de orden 12
+diff.regular2 = diff(diff.regular1, lag=12)
+plot(diff.regular2)
+plot(decompose(diff.regular2))
+
+# Verificación de estacionalidad de media
+# Prueba de autocorrelacion
+acf(diff.regular2) # No hay tendencia
+# Prueba de Dickey-Fuller
+adf.test(diff.regular2) # Ya es estacionaria
 
 
 # ----------------------------------------------------
