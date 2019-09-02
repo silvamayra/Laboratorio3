@@ -60,7 +60,7 @@ library(tseries)
 library(fUnitRoots)
 library(ggfortify)
 
-setwd("C:/Users/smayr/Documents/Tercer a�o/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
+#setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
 
 
 # Leyendo el dataset de csv importacion
@@ -82,26 +82,18 @@ summary(data)
 
 #-------------------------- Analisis exploratorio ------------------------
 
-
-
 corr <- cor(data)
 # Se visualiza la matriz de correlación de forma gráfica
 corrplot(corr)
 
 
-
 #Ajuste de normalidad, para la variable diesel. 
-
-
-
-
 descdist(data$Diesel, discrete= FALSE)
 dieselfit <- fitdist(data$Diesel,"norm")
 plot(dieselfit)
 
 
 #Ajuste de normalidad para variable de Regular
-
 descdist(data$GasRegular, discrete= FALSE)
 
 #Prueba de normalidad para super
@@ -112,15 +104,11 @@ plot(superfit)
 
 
 # Meses de importacion
-
-
 dataMonth  <- group_by(data, Mes)
 summaryMonth  <- summarise(dataMonth, sumMonth=sum(Total))
-
 plot(summaryMonth, main= 'Meses vs Total de Importaciones', type='l')
 
 #Picos en importaciones de año
-
 ggplot(data, aes(x=as.factor(Anio), y=Total)) + 
   geom_boxplot(fill="slateblue", alpha=0.2) + 
   xlab("Año de importacion")
@@ -145,32 +133,39 @@ ggplot(data)+ geom_point(aes(x=Anio, y=GasSuperior), color='blue')
 
 
 # DIESEL
-
-
 #Ver el gráfico de la serie
 diesel.ts<-ts(data$Diesel,start = c(2001,1), end=c(2019,6), frequency = 12)
 plot(diesel.ts)
 # Descomponiendo la serie de diesel
 diesel.ts.desc <- decompose(diesel.ts)
 plot(diesel.ts.desc)
-
 # RESUMEN: No muestra tendencia, es estancionaria con la media pero no con la varianza
-#Transformacion de la serie
 
+#Transformacion de la serie
 dieselTrans<- log(diesel.ts)
 tm <- cbind(dieselTrans, diesel.ts)
 plot.ts(tm)
 #↓ot(decompose(dieselTrans))
-
 #no es eficiente
+
 lambda<- BoxCox.lambda(diesel.ts) 
 lambda #fue de  1.8
-plot.ts(BoxCox(diesel.ts, lambda=0.7))
-
+plot.ts(BoxCox(diesel.ts, lambda=lambda))
+plot(decompose(dieselTrans))
 #elimnando la tendencia
-
 m <- acf(diff(diesel.ts), plot=TRUE)
 m
+
+# Eliminación de tendencia
+x = log(diesel.ts)
+dif1.x = diff(x)
+plot(dif1.x)
+# Eliminación de estacionalidad con diferencias estacionales de orden 12
+dift2.x = diff(dif1.x, lag=12)
+plot(dift2.x)
+
+plot(decompose(dift2.x))
+acf(dift2.x)
 
 
 
@@ -185,6 +180,9 @@ plot(super.ts.desc)
 # RESUMEN: Sí hay tendencia, no es estacionara con la media pero lo es con la varianza un poco
 
 
+
+
+
 # REGULAR
 regular.ts<-ts(data$GasRegular,start = c(2001,1),frequency = 12)
 plot(regular.ts)
@@ -192,7 +190,6 @@ plot(regular.ts)
 start(data$GasRegular)
 regular.ts.desc <- decompose(regular.ts)
 plot(regular.ts.desc)
-
 
 
 
