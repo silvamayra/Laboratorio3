@@ -169,8 +169,9 @@ acf(dift2.x)
 
 
 
-
+# ----------------------------------------------------
 # SUPER
+# ----------------------------------------------------
 #Ver el gráfico de la serie
 super.ts<-ts(data$GasSuperior,start = c(2001,1), end=c(2019,6), frequency = 12)
 plot(super.ts)
@@ -179,11 +180,36 @@ super.ts.desc <- decompose(super.ts)
 plot(super.ts.desc)
 # RESUMEN: Sí hay tendencia, no es estacionara con la media pero lo es con la varianza un poco
 
+# Prueba de autocorrelación
+acf(super.ts) # No es estacionaria en la media
+# Prueba de Dickey-Fuller
+adf.test(super.ts) # Se rechaza Ho --> no es estacionario
 
+# Volviendo SUPER estacionaria
+# Se harán 12 diferenciaciones 
+l.super <- BoxCox.lambda(super.ts) 
+l.super #fue de 0.55
+x.super <- BoxCox(super.ts, lambda=l.super)
+plot.ts(x.super)
+# Eliminación de tendencia
+diff.super1 = diff(x.super)
+plot(diff.super1)
+# Eliminación de estacionalidad con diferencias estacionales de orden 12
+diff.super2 = diff(diff.super1, lag=12)
+plot(diff.super2)
+plot(decompose(diff.super2))
 
+# Verificación de estacionalidad de media
+# Prueba de autocorrelacion
+acf(diff.super2) # No hay tendencia
+# Prueba de Dickey-Fuller
+adf.test(diff.super2) # Ya es estacionaria
 
+# Gasolina Super: Esto ya está listo
 
+# ----------------------------------------------------
 # REGULAR
+# ----------------------------------------------------
 regular.ts<-ts(data$GasRegular,start = c(2001,1),frequency = 12)
 plot(regular.ts)
 # Descomponiendo la serie de diesel
