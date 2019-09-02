@@ -247,11 +247,36 @@ adf.test(diff.regular2) # Ya es estacionaria
 # Modelo ARIMA para diesel
 # ----------------------------------------------------
 
-auto.arima(data$Diesel)
-
-# Iniciando el modelo de ARIMA
-fit <- arima(log(data$Diesel), c(0, 1, 1),seasonal = list(order = c(0, 1, 1), period = 12))
+modeloDiesel <- auto.arima(diff.diesel2, stationary=TRUE)
 
 
 
+pronosticoDiesel <- forecast(modeloDiesel, level = c(95), h = 120)
 
+autoplot(pronosticoDiesel)
+
+# ----------------------------------------------------
+# Modelo ARIMA para super
+# ----------------------------------------------------
+
+
+modeloSuper <- auto.arima(diff.super2, stationary = TRUE)
+
+
+
+pronosticoSuper <- forecast(modeloSuper, level = c(95), h = 120)
+
+autoplot(pronosticoSuper)
+
+
+# ----------------------------------------------------
+# Modelo ARIMA para Regular
+# ----------------------------------------------------
+
+modeloRegular <- auto.arima(diff.regular2, stationary = TRUE)
+
+
+
+pronosticoRegular <- forecast(modeloRegular, level = c(95), h = 120)
+
+autoplot(pronosticoRegular)
