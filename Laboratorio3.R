@@ -144,12 +144,12 @@ plot(diesel.ts.desc)
 #Prueba de autocorrelación
 acf(diesel.ts) # No es estacionaria
 # Prueba de Dickey-Fuller
-adf.test(diesel.ts,k=12) # Se rechaza Ho --> no es estacionario
+adf.test(diesel.ts,k=12) # No se rechaza Ho --> No es estacionario
 
 # Volviendo Diesel estacionaria
 # Se harán 12 diferenciaciones 
 l.diesel <- BoxCox.lambda(diesel.ts) 
-l.diesel #fue de 1.80
+l.diesel #fue de -0.103327
 x.diesel <- BoxCox(diesel.ts, lambda=l.diesel)
 plot.ts(x.diesel)
 # Eliminación de tendencia
@@ -158,10 +158,7 @@ ndiffs(diesel.ts)
 diff.diesel1 = diff(x.diesel)
 plot(diff.diesel1)
 ndiffs(diff.diesel1)
-# Eliminación de estacionalidad con diferencias estacionales de orden 12
-#diff.diesel2 = diff(diff.diesel1, lag=12)
-#plot(diff.diesel2)
-#plot(decompose(diff.diesel2))
+# Ya no se necesitan hacer más diferenciaciones
 
 # Verificación de estacionalidad de media
 # Prueba de autocorrelacion
@@ -261,11 +258,17 @@ adf.test(diff.regular2) # Ya es estacionaria
 # Modelo ARIMA para diesel
 # ----------------------------------------------------
 
-modeloDiesel <- auto.arima(diff.diesel2, stationary=TRUE)
+#Auto Arima
+modeloDiesel <- auto.arima(diesel.ts, stationary=TRUE)
 
+pronosticoAutoDiesel <- forecast(modeloDiesel, level = c(95), h = 120)
 
+autoplot(pronosticoAutoDiesel)
 
-pronosticoDiesel <- forecast(modeloDiesel, level = c(95), h = 120)
+# Arima propio
+fit <- arima(log(diesel.ts), c(7, 1, 4),seasonal = list(order = c(0, 1, 0), period = 12))
+
+pronosticoDiesel <- forecast(fit, level = c(95), h = 120)
 
 autoplot(pronosticoDiesel)
 
