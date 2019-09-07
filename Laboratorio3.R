@@ -134,7 +134,7 @@ ggplot(data)+ geom_point(aes(x=Anio, y=GasSuperior), color='blue')
 
 # DIESEL
 #Ver el gráfico de la serie
-diesel.ts<-ts(data$Diesel,start = c(2001,1), end=c(2019,6), frequency = 12)
+diesel.ts<-ts(data$Diesel,start = c(2001,1), end=c(2016,12), frequency = 12)
 plot(diesel.ts)
 # Descomponiendo la serie de diesel
 diesel.ts.desc <- decompose(diesel.ts)
@@ -144,7 +144,7 @@ plot(diesel.ts.desc)
 #Prueba de autocorrelación
 acf(diesel.ts) # No es estacionaria
 # Prueba de Dickey-Fuller
-adf.test(diesel.ts) # Se rechaza Ho --> no es estacionario
+adf.test(diesel.ts,k=12) # Se rechaza Ho --> no es estacionario
 
 # Volviendo Diesel estacionaria
 # Se harán 12 diferenciaciones 
@@ -153,18 +153,25 @@ l.diesel #fue de 1.80
 x.diesel <- BoxCox(diesel.ts, lambda=l.diesel)
 plot.ts(x.diesel)
 # Eliminación de tendencia
+ndiffs(diesel.ts)
+# d = 1
 diff.diesel1 = diff(x.diesel)
 plot(diff.diesel1)
+ndiffs(diff.diesel1)
 # Eliminación de estacionalidad con diferencias estacionales de orden 12
-diff.diesel2 = diff(diff.diesel1, lag=12)
-plot(diff.diesel2)
-plot(decompose(diff.diesel2))
+#diff.diesel2 = diff(diff.diesel1, lag=12)
+#plot(diff.diesel2)
+#plot(decompose(diff.diesel2))
 
 # Verificación de estacionalidad de media
 # Prueba de autocorrelacion
-acf(diff.diesel2) # No hay tendencia
+acf(x.diesel,150) # No se puede distinguir is es AR o ARMA
+pacf(x.diesel,150)
+# p = 7
+# q = 4
+
 # Prueba de Dickey-Fuller
-adf.test(diff.diesel2) # Ya es estacionaria
+adf.test(x.diesel, k = 12) # Ya es estacionaria
 
 
 
@@ -182,7 +189,7 @@ plot(super.ts.desc)
 # Prueba de autocorrelación
 acf(super.ts) # No es estacionaria en la media
 # Prueba de Dickey-Fuller
-adf.test(super.ts) # Se rechaza Ho --> no es estacionario
+adf.test(super.ts, k = 12) # Se rechaza Ho --> no es estacionario
 
 # Volviendo SUPER estacionaria
 # Se harán 12 diferenciaciones 
@@ -191,18 +198,25 @@ l.super #fue de 0.55
 x.super <- BoxCox(super.ts, lambda=l.super)
 plot.ts(x.super)
 # Eliminación de tendencia
+ndiffs(super.ts)
+# d = 1
 diff.super1 = diff(x.super)
 plot(diff.super1)
 # Eliminación de estacionalidad con diferencias estacionales de orden 12
-diff.super2 = diff(diff.super1, lag=12)
-plot(diff.super2)
-plot(decompose(diff.super2))
+#diff.super2 = diff(diff.super1, lag=12)
+#plot(diff.super2)
+#plot(decompose(diff.super2))
 
 # Verificación de estacionalidad de media
 # Prueba de autocorrelacion
-acf(diff.super2) # No hay tendencia
+acf(x.super) # No hay tendencia
 # Prueba de Dickey-Fuller
-adf.test(diff.super2) # Ya es estacionaria
+adf.test(x.super, k = 12) # No es estacionaria
+
+# Verificación de estacionalidad de media con diferenciación
+# Autocorrelación
+acf(diff.super1, 150)
+pacf(diff.super1, 95)
 
 # Gasolina Super: Esto ya está listo
 
