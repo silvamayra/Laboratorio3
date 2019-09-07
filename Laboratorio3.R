@@ -176,7 +176,7 @@ adf.test(x.diesel, k = 12) # Ya es estacionaria
 # SUPER
 # ----------------------------------------------------
 #Ver el gráfico de la serie
-super.ts<-ts(data$GasSuperior,start = c(2001,1), end=c(2019,6), frequency = 12)
+super.ts<-ts(data$GasSuperior,start = c(2001,1), end=c(2016,12), frequency = 12)
 plot(super.ts)
 # Descomponiendo la serie de diesel
 super.ts.desc <- decompose(super.ts)
@@ -191,7 +191,7 @@ adf.test(super.ts, k = 12) # Se rechaza Ho --> no es estacionario
 # Volviendo SUPER estacionaria
 # Se harán 12 diferenciaciones 
 l.super <- BoxCox.lambda(super.ts) 
-l.super #fue de 0.55
+l.super #fue de 0.09799212
 x.super <- BoxCox(super.ts, lambda=l.super)
 plot.ts(x.super)
 # Eliminación de tendencia
@@ -199,29 +199,29 @@ ndiffs(super.ts)
 # d = 1
 diff.super1 = diff(x.super)
 plot(diff.super1)
-# Eliminación de estacionalidad con diferencias estacionales de orden 12
-#diff.super2 = diff(diff.super1, lag=12)
-#plot(diff.super2)
-#plot(decompose(diff.super2))
+ndiffs(diff.super1)
+# Ya no se necesitan hacer más diferenciaciones
 
 # Verificación de estacionalidad de media
 # Prueba de autocorrelacion
-acf(x.super) # No hay tendencia
-# Prueba de Dickey-Fuller
-adf.test(x.super, k = 12) # No es estacionaria
+acf(diff.super1,200) # No se puede distinguir is es AR o ARMA
+pacf(diff.super1,50)
+# p = 7
+# q = se aproxima a 4
 
-# Verificación de estacionalidad de media con diferenciación
-# Autocorrelación
-acf(diff.super1, 150)
-pacf(diff.super1, 95)
+# Prueba de Dickey-Fuller
+adf.test(diff.super1, k = 12) # Ya es estacionaria
 
 # Gasolina Super: Esto ya está listo
+
+
+
 
 # ----------------------------------------------------
 # REGULAR
 # ----------------------------------------------------
 #Ver el gráfico de la serie
-regular.ts<-ts(data$GasRegular,start = c(2001,1), end=c(2019,6), frequency = 12)
+regular.ts<-ts(data$GasRegular,start = c(2001,1), end=c(2016,12), frequency = 12)
 plot(regular.ts)
 # Descomponiendo la serie de diesel
 regular.ts.desc <- decompose(regular.ts)
@@ -236,22 +236,27 @@ adf.test(regular.ts) # Se rechaza Ho --> no es estacionario
 # Volviendo Regular estacionaria
 # Se harán 12 diferenciaciones 
 l.regular <- BoxCox.lambda(regular.ts) 
-l.regular #fue de 0.45
+l.regular #fue de -0.06995
 x.regular <- BoxCox(regular.ts, lambda=l.regular)
 plot.ts(x.regular)
 # Eliminación de tendencia
+ndiffs(regular.ts)
+# d = 1
 diff.regular1 = diff(x.regular)
 plot(diff.regular1)
-# Eliminación de estacionalidad con diferencias estacionales de orden 12
-diff.regular2 = diff(diff.regular1, lag=12)
-plot(diff.regular2)
-plot(decompose(diff.regular2))
+ndiffs(diff.regular1)
+# Ya no se necesitan hacer más diferenciaciones
 
 # Verificación de estacionalidad de media
 # Prueba de autocorrelacion
-acf(diff.regular2) # No hay tendencia
+acf(diff.regular1,90) # No se puede distinguir is es AR o ARMA
+pacf(diff.regular1,60)
+# p = 12
+# q = 4
+
 # Prueba de Dickey-Fuller
-adf.test(diff.regular2) # Ya es estacionaria
+adf.test(diff.regular1, k = 12) # Ya es estacionaria
+
 
 
 # ----------------------------------------------------
@@ -260,40 +265,45 @@ adf.test(diff.regular2) # Ya es estacionaria
 
 #Auto Arima
 modeloDiesel <- auto.arima(diesel.ts, stationary=TRUE)
-
 pronosticoAutoDiesel <- forecast(modeloDiesel, level = c(95), h = 120)
-
 autoplot(pronosticoAutoDiesel)
+
 
 # Arima propio
 fit <- arima(log(diesel.ts), c(7, 1, 4),seasonal = list(order = c(0, 1, 0), period = 12))
-
 pronosticoDiesel <- forecast(fit, level = c(95), h = 120)
-
 autoplot(pronosticoDiesel)
+
 
 # ----------------------------------------------------
 # Modelo ARIMA para super
 # ----------------------------------------------------
 
+# Auto arima
+modeloSuper <- auto.arima(super.ts, stationary = TRUE)
+#p=0,d=0,q=2
+pronosticoSuper <- forecast(modeloSuper, level = c(95), h = 40)
+autoplot(pronosticoSuper) #Grafica
 
-modeloSuper <- auto.arima(diff.super2, stationary = TRUE)
-
-
-
-pronosticoSuper <- forecast(modeloSuper, level = c(95), h = 120)
-
-autoplot(pronosticoSuper)
+# Arima propio
+fit.super <- arima(log(super.ts),c(6,1,4),seasonal = list(order=c(0,1,0), period =12))
+pronosticoSuper2 <- forecast(fit.super,level = c(95),h=40)
+autoplot(pronosticoSuper2)
 
 
 # ----------------------------------------------------
 # Modelo ARIMA para Regular
 # ----------------------------------------------------
 
-modeloRegular <- auto.arima(diff.regular2, stationary = TRUE)
-
-
-
-pronosticoRegular <- forecast(modeloRegular, level = c(95), h = 120)
-
+# Auto arima
+modeloRegular <- auto.arima(regular.ts, stationary = TRUE)
+#p=0,q=o,d=0
+pronosticoRegular <- forecast(modeloRegular, level = c(95), h = 30)
 autoplot(pronosticoRegular)
+
+# Arima propio
+fit.regular <- arima(log(regular.ts),c(12,1,4),seasonal = list(order=c(0,1,0), period =12))
+pronosticoRegular2 <- forecast(fit.regular,level = c(95),h=30)
+autoplot(pronosticoRegular2)
+
+
