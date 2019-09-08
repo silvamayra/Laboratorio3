@@ -61,7 +61,7 @@ library(tseries)
 library(fUnitRoots)
 library(ggfortify)
 
-#setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
+#setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
 
 
 # Leyendo el dataset de csv importacion
@@ -329,9 +329,17 @@ autoplot(pronosticoRegular2)
 # Comprobando predicicones
 # ----------------------------------------------------
 
+# Diesel
 testDiesel <-ts(dataN$Diesel,start = c(2001,1), end=c(2019,6), frequency = 12)
+# Se aplica el modelo y train al conjunto test con Arima
+diesel.test <- Arima(testDiesel, model=fit)
+autoplot(diesel.test) # Grafica
+accuracy(diesel.test) # Residuos obtenidos de cada error del forecast
+
+
 testSuper <-ts(data$GasSuperior,start = c(2001,1), end=c(2019,6), frequency = 12)
 testRegular <-ts(data$GasRegular,start = c(2001,1), end=c(2019,6), frequency = 12)
+
 
 pDiesel<- ts(pronosticoAutoDiesel, start = c(2001,1), end=c(2019,6), frequency = 12) 
 
