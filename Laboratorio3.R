@@ -81,6 +81,18 @@ data[is.na(data)] <- 0
 summary(data)
 
 
+# ----------------------------------------------------
+# Unificando diesel
+# ----------------------------------------------------
+
+
+
+data2 <-data.frame(Diesel = c(data[,"Diesel"], data[,"DieselLS"]))
+dataN <- cbind(data2, data[,c(1,2)])
+
+dataN <- dataN[-c(205:426),]
+
+
 #-------------------------- Analisis exploratorio ------------------------
 
 corr <- cor(data)
@@ -122,16 +134,7 @@ ggplot(data)+ geom_point(aes(x=Anio, y=GasSuperior), color='blue')
 #Picos en importaciones regular
   ggplot(data)+ geom_point(aes(x=Anio, y=GasRegular, color='red'))
 
-  # ----------------------------------------------------
-  # Unificando diesel
-  # ----------------------------------------------------
   
-data$DieselLS <- rowSums( data[,10:11] )
-  
-data2 <-data.frame(Diesel = c(data[,"Diesel"], data[,"DieselLS"]))
-dataN <- cbind(data2, data[,c(1,2)])
-  
-dataN <- dataN[-c(205:426),]
   
 
 
@@ -271,6 +274,9 @@ adf.test(diff.regular1, k = 12) # Ya es estacionaria
 
 
 
+
+
+
 # ----------------------------------------------------
 # Modelo ARIMA para diesel
 # ----------------------------------------------------
@@ -279,6 +285,7 @@ adf.test(diff.regular1, k = 12) # Ya es estacionaria
 modeloDiesel <- auto.arima(diesel.ts, stationary=TRUE)
 pronosticoAutoDiesel <- forecast(modeloDiesel, level = c(95), h = 120)
 autoplot(pronosticoAutoDiesel)
+
 
 
 # Arima propio
@@ -318,6 +325,14 @@ fit.regular <- arima(log(regular.ts),c(12,1,4),seasonal = list(order=c(0,1,0), p
 pronosticoRegular2 <- forecast(fit.regular,level = c(95),h=30)
 autoplot(pronosticoRegular2)
 
+# ----------------------------------------------------
+# Comprobando predicicones
+# ----------------------------------------------------
 
+testDiesel <-ts(dataN$Diesel,start = c(2001,1), end=c(2019,6), frequency = 12)
+testSuper <-ts(data$GasSuperior,start = c(2001,1), end=c(2019,6), frequency = 12)
+testRegular <-ts(data$GasRegular,start = c(2001,1), end=c(2019,6), frequency = 12)
+
+pDiesel<- ts(pronosticoAutoDiesel, start = c(2001,1), end=c(2019,6), frequency = 12) 
 
 
