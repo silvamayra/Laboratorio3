@@ -122,6 +122,17 @@ ggplot(data)+ geom_point(aes(x=Anio, y=GasSuperior), color='blue')
 #Picos en importaciones regular
   ggplot(data)+ geom_point(aes(x=Anio, y=GasRegular, color='red'))
 
+  # ----------------------------------------------------
+  # Unificando diesel
+  # ----------------------------------------------------
+  
+data$DieselLS <- rowSums( data[,10:11] )
+  
+data2 <-data.frame(Diesel = c(data[,"Diesel"], data[,"DieselLS"]))
+dataN <- cbind(data2, data[,c(1,2)])
+  
+dataN <- dataN[-c(205:426),]
+  
 
 
 
@@ -135,7 +146,7 @@ ggplot(data)+ geom_point(aes(x=Anio, y=GasSuperior), color='blue')
 
 # DIESEL
 #Ver el gráfico de la serie
-diesel.ts<-ts(data$Diesel,start = c(2001,1), end=c(2016,12), frequency = 12)
+diesel.ts<-ts(dataN$Diesel,start = c(2001,1), end=c(2016,12), frequency = 12)
 plot(diesel.ts)
 # Descomponiendo la serie de diesel
 diesel.ts.desc <- decompose(diesel.ts)
@@ -307,16 +318,6 @@ fit.regular <- arima(log(regular.ts),c(12,1,4),seasonal = list(order=c(0,1,0), p
 pronosticoRegular2 <- forecast(fit.regular,level = c(95),h=30)
 autoplot(pronosticoRegular2)
 
-# ----------------------------------------------------
-# Unificando diesel
-# ----------------------------------------------------
-
-data$DieselLS <- rowSums( data[,10:11] )
-
-data2 <-data.frame(Diesel = c(data[,"Diesel"], data[,"DieselLS"]))
-dataN <- cbind(data2, data[,c(1,2)])
-
-dataN <- dataN[-c(205:426),]
 
 
 
