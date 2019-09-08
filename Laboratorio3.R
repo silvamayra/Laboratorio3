@@ -330,22 +330,25 @@ autoplot(pronosticoRegular2)
 # ----------------------------------------------------
 
 # Diesel
-testDiesel <-ts(dataN$Diesel,start = c(2001,1), end=c(2019,6), frequency = 12)
+testDiesel <-ts(dataN$Diesel,start = c(2018,1), end=c(2019,12), frequency = 12)
 # Se aplica el modelo y train al conjunto test con Arima
 diesel.test <- Arima(testDiesel, model=fit)
 autoplot(diesel.test) # Grafica
 accuracy(diesel.test) # Residuos obtenidos de cada error del forecast
 
 # Super
-testSuper <-ts(data$GasSuperior,start = c(2018,1), end=c(2019,6), frequency = 12)
+testSuper <-ts(data$GasSuperior,start = c(2018,1), end=c(2019,12), frequency = 12)
 # Se aplica el modelo y train al conjunto test con Arima
 super.test <- Arima(testSuper, model = fit.super)
 autoplot(super.test)
 accuracy(super.test)
 
-
-testRegular <-ts(data$GasRegular,start = c(2001,1), end=c(2019,6), frequency = 12)
-
+# Regular
+testRegular <-ts(data$GasRegular,start = c(2018,1), end=c(2019,12), frequency = 12)
+# Se aplica el modelo y train al conjunto test con Arima
+super.regular <- Arima(testRegular, model = fit.regular)
+autoplot(super.regular) # Grafica de las dos series de tiempo
+accuracy(super.regular) # Residuos 
 
 pDiesel<- ts(pronosticoAutoDiesel, start = c(2001,1), end=c(2019,6), frequency = 12) 
 
