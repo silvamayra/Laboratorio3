@@ -1,5 +1,6 @@
 
 
+
 ########################################
 ## Universidad del Valle de Guatemala ##
 ## Laboratorio 2: Data Science        ##
@@ -60,7 +61,7 @@ library(tseries)
 library(fUnitRoots)
 library(ggfortify)
 
-#setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
+#setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 3/Laboratorio3")
 
 
 # Leyendo el dataset de csv importacion
@@ -305,5 +306,17 @@ autoplot(pronosticoRegular)
 fit.regular <- arima(log(regular.ts),c(12,1,4),seasonal = list(order=c(0,1,0), period =12))
 pronosticoRegular2 <- forecast(fit.regular,level = c(95),h=30)
 autoplot(pronosticoRegular2)
+
+# ----------------------------------------------------
+# Unificando diesel
+# ----------------------------------------------------
+
+data$DieselLS <- rowSums( data[,10:11] )
+
+data2 <-data.frame(Diesel = c(data[,"Diesel"], data[,"DieselLS"]))
+dataN <- cbind(data2, data[,c(1,2)])
+
+dataN <- dataN[-c(205:426),]
+
 
 
