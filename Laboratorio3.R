@@ -336,8 +336,14 @@ diesel.test <- Arima(testDiesel, model=fit)
 autoplot(diesel.test) # Grafica
 accuracy(diesel.test) # Residuos obtenidos de cada error del forecast
 
+# Super
+testSuper <-ts(data$GasSuperior,start = c(2018,1), end=c(2019,6), frequency = 12)
+# Se aplica el modelo y train al conjunto test con Arima
+super.test <- Arima(testSuper, model = fit.super)
+autoplot(super.test)
+accuracy(super.test)
 
-testSuper <-ts(data$GasSuperior,start = c(2001,1), end=c(2019,6), frequency = 12)
+
 testRegular <-ts(data$GasRegular,start = c(2001,1), end=c(2019,6), frequency = 12)
 
 
